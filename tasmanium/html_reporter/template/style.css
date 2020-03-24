@@ -1,0 +1,376 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.test-list-entry-default {
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    padding: 14px;
+    margin-bottom: 1px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.test-list-entry-default:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+}
+
+.test-list-entry-failed {
+    background-color: #b66;
+}
+
+.test-list-entry-passed {
+    background-color: #6b6;
+}
+
+.test-list-entry-skipped {
+    background-color: #bb6;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+    display: flex;
+}
+
+#test-list {
+    width: 33.3%;
+    display: block;
+    height: 100%;
+    margin-right: 10px;
+    overflow-y: auto;
+}
+
+.inner-container {
+    display: block;
+}
+
+#single-test-container {
+    width: 66.6%;
+    display: block;
+    overflow-y: auto;
+}
+
+#single-test-placeholder {
+    text-align: center;
+    border: 2px dashed #888;
+    font-size: 36px;
+}
+
+.single-test-content {
+    border: 2px dashed #444;
+    background-color: #eee;
+    height: Calc(100vh - 20px);
+}
+
+.single-test-content-failed {
+    border: 2px dashed #b66;
+    background-color: #fdd;
+    height: Calc(100vh - 20px);
+}
+
+.single-test-content-passed {
+    border: 2px dashed #6b6;
+    background-color: #dfd;
+    height: Calc(100vh - 20px);
+}
+
+.single-test-content-skipped {
+    border: 2px dashed #bb8;
+    background-color: #ffd;
+    height: Calc(100vh - 20px);
+}
+
+.single-test-header {
+    border: 1px solid #444;
+    padding: 6px 10px;
+}
+
+.exception-header {
+    color: #a00;
+    border-top: 1px solid #444;
+}
+
+.exception {
+    background-color: #f9f2f4;
+    color: #000;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 12px 20px;
+    margin-bottom: 12px;
+}
+
+.test-repeats {
+    border: 2px dashed #444;
+    background-color: #eee;
+    height: Calc(100vh - 20px);
+}
+
+div.toolbar {
+    border: 1px solid #444;
+}
+
+.collapsible {
+    background-color: #666;
+    color: white;
+    cursor: pointer;
+    padding: 14px;
+    margin-bottom: 1px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.collapsible:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.1);
+}
+
+.collapsible:before {
+    content: "➕";
+}
+
+.active:before {
+    content: "➖";
+}
+
+.collapsible.empty:before {
+    content: " ";
+}
+
+.active.empty:before {
+    content: " ";
+}
+
+.collapsible-failed {
+    background-color: #b66;
+}
+
+.collapsible-passed {
+    background-color: #6b6;
+}
+
+.collapsible-skipped {
+    background-color: #bb8;
+}
+
+.collapsible-step-failed {
+    background-color: #b66;
+}
+
+.collapsible-step-passed {
+    background-color: #6b6;
+}
+
+.collapsible-step-not-executed {
+    background-color: #666;
+}
+
+.collapsible-content {
+    padding: 0px 0px 0px 18px;
+    background-color: white;
+    overflow: hidden;
+}
+
+.step-attachment {
+    padding: 12px 0px 12px 8px;
+    border: 1px solid black;
+    background-color: rgb(226, 226, 226);
+}
+
+.step-attachment-plaintext:before {
+    content: "📝"
+}
+
+.step-attachment-image:before {
+    content: "🖼️"
+}
+
+.step-attachment-binary:before {
+    content: "📦"
+}
+
+.step-attachment:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+}
+
+.step-attachment-filename {
+    font-weight: bold;
+}
+
+.step-time {
+    font-style: italic;
+    font-size: 75%;
+}
+
+.step-attachment-type {
+    font-style: italic;
+    font-size: 75%;
+}
+
+.step-attachment-description {
+    font-style: italic;
+}
+
+.collapsed-count {
+    float: right;
+}
+
+.hidden {
+    display: none;
+}
+
+#file-modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#file-modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: Calc(100vw - 200px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: Calc(100vh - 100px);
+    position: fixed;
+}
+
+#file-modal-download {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#file-modal-download>a {
+    text-decoration: none;
+}
+
+#file-modal-close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#file-modal-close>a {
+    text-decoration: none;
+}
+
+#file-modal-header {
+    display: block;
+    width: 100%;
+    height: 48px;
+    font-size: large;
+}
+
+#file-modal-file {
+    display: block;
+    width: 100%;
+    height: Calc(100% - 48px);
+    overflow-y: auto;
+}
+
+#file-modal-filename {
+    font-weight: bold;
+}
+
+#file-modal-type {
+    font-style: italic;
+    font-size: 75%;
+}
+
+#file-modal-description {
+    font-style: italic;
+}
+
+#file-modal-close:hover,
+#file-modal-close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#file-modal-file-contents {
+    display: block;
+    border: 1px solid black;
+}
+
+#file-modal-contents-plaintext {
+    background-color: #f9f2f4;
+    color: #c7254e;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#file-modal-contents-image {
+    height: auto;
+    width: auto;
+    max-width: Calc(100vw - 205px);
+    max-height: Calc(100vh - 154px);
+    border: 2px dashed #444;
+}
+
+button.toolbar {
+    background-color: #66b;
+    color: white;
+    cursor: pointer;
+    padding: 12px 20px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 4px;
+}
+
+button.toolbar:disabled {
+    background-color: #888;
+    cursor: default;
+}
+
+button.grouped {
+    background-color: #688;
+}
+
+button.selected {
+    background-color: #6bb;
+}
+
+button.toolbar:hover {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.3);
+}
+
+button.toolbar:hover:disabled {
+    box-shadow: inset 0 0 100px 100px rgba(255, 255, 255, 0.0);
+}
+
+.test-list-header {
+    border: 1px solid #444;
+    padding: 6px 10px;
+}
+
+.test-list-list {
+    border: 1px solid #444;
+}
+
+.header-footer {
+    border-top: 1px solid black;
+    padding-top: 6px;
+}

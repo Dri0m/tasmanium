@@ -1,0 +1,333 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+#from html import escape
+
+<div class="container">
+    <div id="test-list">
+        <div class="inner-container">
+
+            <div class="test-list-header">
+                <h2>Test results</h2>
+            </div>
+
+            <div class="toolbar">
+                <button class="toolbar grouped" id="show-flat">Flat view</button>
+                <button class="toolbar grouped" id="show-outlines">Group by outlines</button>
+                <button class="toolbar grouped" id="show-features">Group by features</button>
+                <button class="toolbar grouped selected" id="show-exceptions">Group by exceptions</button>
+            </div>
+            <div class="toolbar">
+                <button class="toolbar" id="toggle-passed">Hide passed</button>
+                <button class="toolbar" id="toggle-failed">Hide failed</button>
+                <button class="toolbar" id="toggle-skipped">Hide skipped</button>
+            </div>
+
+            <div class="test-list-list hidden" id="test-list-flat">
+                #for $scenario in $scenarios:
+                    #if $scenario.overall_result == 'passed':
+                        #set global $class = 'test-list-entry-passed'
+                    #elif $scenario.overall_result == 'failed':
+                        #set global $class = 'test-list-entry-failed'
+                    #elif $scenario.overall_result == 'skipped':
+                        #set global $class = 'test-list-entry-skipped'
+                    #end if
+                    <button class="test-list-entry-default $class" id="entry-flat-$scenario.last_id()">
+                        $scenario.name
+                    </button>
+                #end for
+            </div>
+
+            <div class="test-list-list hidden" id="test-list-outlines">
+                #for $feature in $features:
+        
+                    #for $key in ['passed', 'failed', 'skipped']:
+                        #for $scenario_outline in $feature.results['{}_scenario_outlines'.format($key)]:
+                            <button class="collapsible collapsible-$key scenario-outline" id="scenario_outline-$scenario_outline.identifier">
+                                #echo escape($scenario_outline.raw_name)
+                                <span class="collapsed-count">
+                                    (
+                                    #echo len($scenario_outline.results['passed_scenarios'])
+                                    /
+                                    #echo len($scenario_outline.results['failed_scenarios'])
+                                    /
+                                    #echo len($scenario_outline.results['skipped_scenarios'])
+                                    )
+                                </span>
+                            </button>
+                            <div class="collapsible-content hidden">
+                                #for $key2 in ['passed', 'failed', 'skipped']:
+                                    #for $scenario in $scenario_outline.results['{}_scenarios'.format($key2)]:
+                                        <button class="test-list-entry-default test-list-entry-$key2" id="entry-outline-$scenario.last_id()">
+                                            [$scenario.examples_name] $scenario.name
+                                        </button>
+                                    #end for
+                                #end for
+                            </div>
+                        #end for
+                    #end for
+
+                    #for $key in ['passed', 'failed', 'skipped']:
+                        #for $scenario in $feature.results['{}_scenarios'.format($key)]:
+                            <button class="test-list-entry-default test-list-entry-$key" id="entry-outline-$scenario.last_id()">
+                                $scenario.name
+                            </button>
+                        #end for
+                    #end for
+
+                #end for
+            </div>
+
+            <div class="test-list-list hidden" id="test-list-features">
+                #for $feature in $features:
+                    <button class="collapsible collapsible-$feature.overall_result feature" id="feature-$feature.identifier">
+                        $feature.name
+                    </button>
+                    <div class="collapsible-content hidden">
+                        #for $key in ['passed', 'failed', 'skipped']:
+                            #for $scenario in $feature.results['{}_scenarios'.format($key)]:
+                                <button class="test-list-entry-default test-list-entry-$key" id="entry-features-$scenario.last_id()">
+                                    $scenario.name
+                                </button>
+                            #end for
+                        #end for
+                        #for $key in ['passed', 'failed', 'skipped']:
+                            #for $scenario_outline in $feature.results['{}_scenario_outlines'.format($key)]:
+                                <button class="collapsible collapsible-$key scenario-outline" id="scenario-outline-$scenario_outline.identifier">
+                                    #echo escape($scenario_outline.raw_name)
+                                    <span class="collapsed-count">
+                                        (
+                                        #echo len($scenario_outline.results['passed_scenarios'])
+                                        /
+                                        #echo len($scenario_outline.results['failed_scenarios'])
+                                        /
+                                        #echo len($scenario_outline.results['skipped_scenarios'])
+                                        )
+                                    </span>
+                                </button>
+                                <div class="collapsible-content hidden">
+                                    #for $key2 in ['passed', 'failed', 'skipped']:
+                                        #for $scenario in $scenario_outline.results['{}_scenarios'.format($key2)]:
+                                            <button class="test-list-entry-default test-list-entry-$key2" id="entry-features-$scenario.last_id()">
+                                                [$scenario.examples_name] $scenario.name
+                                            </button>
+                                        #end for
+                                    #end for
+                                </div>
+                            #end for
+                        #end for
+                    </div>
+                #end for
+            </div>
+
+            <div class="test-list-list" id="test-list-exceptions">
+                #for $exception_group_name, $exception_group in $exception_groups.items():
+                    <button class="collapsible collapsible-failed exception-group" id="exception-group-$scenario_outline.identifier">
+                        #echo escape(str($exception_group_name))
+                    </button>
+                    <div class="collapsible-content hidden">
+                        #for $exception_arg_group_name, $exception_scenarios in exception_group.items():
+                            <button class="collapsible collapsible-failed exception-arg-group" id="exception-arg-group-$scenario_outline.identifier">
+                                #echo escape(str($exception_arg_group_name))
+                                <span class="collapsed-count">
+                                    (
+                                    #echo len($exception_scenarios)
+                                    )
+                                </span>
+                            </button>
+                            <div class="collapsible-content hidden">
+                                #for $scenario in $exception_scenarios:
+                                    <button class="test-list-entry-default test-list-entry-failed" id="entry-exceptions-$scenario.last_id()">
+                                        [$scenario.feature_name] $scenario.name
+                                    </button>
+                                #end for
+                            </div>
+                        #end for
+                    </div>
+                #end for
+            </div>
+            
+        </div>
+    </div>
+
+
+
+
+
+    <div id="single-test-container">
+        <div class="inner-container">
+
+            <div id="single-test-placeholder">
+                🠈 click on a test to view it
+            </div>
+
+            #for $scenario in $scenarios:
+                #for $repeat in range($scenario.repeat_count + 1):
+                    #if $scenario.overall_result == 'passed':
+                        #set global $scenario_class = 'single-test-content-passed'
+                    #elif $scenario.overall_result == 'failed':
+                        #set global $scenario_class = 'single-test-content-failed'
+                    #elif $scenario.overall_result == 'skipped':
+                        #set global $scenario_class = 'single-test-content-skipped'
+                    #else
+                        #set global $scenario_class = ''
+                    #end if
+                    <div class="single-test-content $scenario_class hidden" id="scenario-$scenario.identifiers[$repeat]">
+
+                        <div class="single-test-header">
+                            <div class="header-heading">
+                                <h2 id="scenario-header-$scenario.identifiers[$repeat]">$scenario.name</h2>
+                            </div>
+                            #if len($scenario.results[repeat]['failed_steps']) > 0:
+                                <div id="exception-header-$scenario.identifiers[$repeat]" class="exception-header">
+                                    <h3>
+                                        #set $step = $scenario.results[repeat]['failed_steps'][0]
+                                        #echo "{} - {}".format($step.results[repeat]['exception']['name'], $step.results[repeat]['exception']['args'])
+                                    </h3>
+                                </div>
+                                <div id="exception-$scenario.identifiers[$repeat]" class="exception">
+                                    #echo $step.results[repeat]['traceback']
+                                </div>
+                            #end if
+                            <div class="header-footer">
+                                <span id="footer-feature-uri-$scenario.identifiers[$repeat]">
+                                    #echo escape("Path: {}".format($scenario.uri))
+                                </span>
+                                <span id="footer-repeat-$scenario.identifiers[$repeat]">
+                                    #if $scenario.repeat_count > 0:
+                                    <br>
+                                        #echo "Repeat: {} out of {}".format($repeat, $scenario.repeat_count)
+                                    #end if
+                                </span>
+                                <span id="footer-outline-name-$scenario.identifiers[$repeat]">
+                                    #if $scenario.is_from_outline:
+                                        <br>
+                                        #echo escape("Outline: {}, Examples: {}".format($scenario.raw_name, $scenario.examples_name))
+                                    #end if
+                                </span>
+                                <span id="footer-execution-time-$scenario.identifiers[$repeat]">
+                                    #if $scenario.results[repeat]['execution_time_ns'] is not None:
+                                        <br>
+                                        #echo "Execution time: {:.3f}s".format($scenario.results[repeat]['execution_time_ns']/1000000000)
+                                    #end if
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="toolbar">
+                            <button class="toolbar off" id="toggle-steps-$scenario.identifiers[$repeat]">Expand all</button>
+                            #if $scenario.overall_result == 'skipped':
+                                #set global $modifier = 'disabled'
+                            #else 
+                                #set global $modifier = ''
+                            #end if
+                            <button class="toolbar show-log" $modifier id="show-log-$scenario.identifiers[$repeat]">Show scenario log</button>
+                            #if $scenario.repeat_count > 0:
+                                #set global $modifier = ''
+                            #else 
+                                #set global $modifier = 'disabled'
+                            #end if
+                            <button class="toolbar show-repeats" $modifier id="show-repeats-$scenario.last_id()-$scenario.identifiers[$repeat]">Show test repeats</button>
+                        </div>
+
+                        #for $step in $scenario.steps:
+
+                            #if $step.results[repeat]['status'] == 'passed':
+                                #set global $class = 'collapsible-step-passed'
+                            #elif $step.results[repeat]['status'] == 'failed':
+                                #set global $class = 'collapsible-step-failed'
+                            #elif $step.results[repeat]['status'] == 'not_executed':
+                                #set global $class = 'collapsible-step-not-executed'
+                            #else
+                                #set global $class = ''
+                            #end if
+
+                            #if len($step.last_attachments()) == 0:
+                                #set global $collapsible_empty = 'empty'
+                            #else:
+                                #set global $collapsible_empty = ''
+                            #end if
+
+                            <button class="collapsible $class $collapsible_empty scenario-$scenario.identifiers[$repeat]" id="step-$step.identifiers[$repeat]">
+                                <span id="step-text-$step.identifiers[$repeat]">
+                                    $step.keyword <b>$step.text</b>
+                                </span>
+                                #if $step.results[repeat]['status'] in ['passed', 'failed']:
+                                    <span id="step-execution-time-$step.identifiers[$repeat]" class="step-time">
+                                        #echo "{:.3f}s".format($step.results[repeat]['execution_time_ns']/1000000000)
+                                    </span>
+                                #end if
+                                <span id="step-attachment-count-$step.identifiers[$repeat]" class="collapsed-count">
+                                    (
+                                    #echo len($step.last_attachments())
+                                    )
+                                </span>
+                            </button>
+
+                            <div id="step-attachments-$step.identifiers[$repeat]" class="collapsible-content hidden">
+                                #set $attachment_counter = 0
+                                #for $attachment in $step.last_attachments():
+                                    <div id="step-attachment-$step.identifiers[$repeat]-$attachment_counter" class="step-attachment step-attachment-$attachment.type">
+                                        <span id="step-attachment-$step.identifiers[$repeat]-$attachment_counter-folder" class="step-attachment-folder hidden">$scenario.identifiers[$repeat]/$step.identifiers[$repeat]</span>
+                                        <span id="step-attachment-$step.identifiers[$repeat]-$attachment_counter-filename" class="step-attachment-filename">$attachment.filename</span>
+                                        <span id="step-attachment-$step.identifiers[$repeat]-$attachment_counter-type" class="step-attachment-type">$attachment.type</span> - 
+                                        #if $attachment.description is not None:
+                                            <span id="step-attachment-$step.identifiers[$repeat]-$attachment_counter-description" class="step-attachment-description">$attachment.description</span>
+                                        #else:
+                                            <span id="step-attachment-$step.identifiers[$repeat]-$attachment_counter-description" class="step-attachment-description">No description available</span>
+                                        #end if
+                                    </div>
+                                    #set $attachment_counter += 1
+                                #end for
+                            </div>
+
+                        #end for
+                    </div>
+                #end for
+
+                <div class="test-repeats $scenario_class hidden" id="scenario-repeat-list-$scenario.identifiers[$repeat]">
+                    #for $repeat in range($scenario.repeat_count + 1):
+                        #if len($scenario.results[repeat]['failed_steps']) > 0:
+                            #set global $class = 'test-list-entry-failed'
+                        #else:
+                            #set global $class = 'test-list-entry-passed'
+                        #end if
+                        <button class="test-list-entry-default $class test-repeat-button" id="test-repeat-button-$scenario.last_id()-$scenario.identifiers[$repeat]">
+                            #if len($scenario.results[repeat]['failed_steps']) > 0:
+                                #set $step = $scenario.results[repeat]['failed_steps'][0]
+                                #echo "#{} - {} - {}".format($repeat, $step.results[repeat]['exception']['name'], $step.results[repeat]['exception']['args'])
+                            #else:
+                                "#{} - Passed".format($repeat)
+                            #end if
+                        </button>
+                    #end for
+                </div>
+
+
+            #end for
+
+        </div>
+    </div>
+</div>
+
+<div id="file-modal" class="hidden">
+  <div id="file-modal-content">
+    <div id="file-modal-header">
+        <span id="file-modal-filename"></span> <span id="file-modal-type"></span> - <span id="file-modal-description"></span>
+        <span id="file-modal-close">❎</span>
+        <span id="file-modal-download">💾</span>
+    </div>
+    <div id="file-modal-file">
+        <div id="file-modal-file-contents">Fetching file contents...</div>
+    </div>
+  </div>
+</div>
+
+</body>
+<script src="js.js"></script>
+</html>
